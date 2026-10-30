@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مغامرة فهد السيبرانية</title>
+<meta name="description" content="لعبة تعليمية لطلاب المرحلة الابتدائية للتوعية بالأمن السيبراني – مبادرة الأمن السيبراني">
+<meta name="theme-color" content="#071a3d">
+<meta property="og:title" content="مغامرة فهد في الأمن السيبراني">
+<meta property="og:description" content="ألعب وأتعلم.. وأحمي نفسي في العالم الرقمي">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+
+<!-- الشريط العلوي الثابت -->
+<header class="topbar">
+  <button class="icon-btn" id="btnHome" type="button" aria-label="العودة للرئيسية" hidden></button>
+  <div class="topbar-title" id="topTitle">مغامرة فهد في الأمن السيبراني</div>
+  <button class="icon-btn" id="btnSound" type="button" aria-label="إيقاف الصوت" aria-pressed="true"></button>
+</header>
+
+<main id="app">
+
+  <!-- ===== الشاشة الرئيسية ===== -->
+  <section class="screen active" id="scr-home" aria-labelledby="homeTitle">
+    <div class="school-strip">
+      <div class="moe-slot" id="moeSlot">
+        <img id="moeLogo" src="moe-logo.png" alt="شعار وزارة التعليم" hidden>
+        <span class="moe-placeholder" id="moePlaceholder">مكان شعار<br>وزارة التعليم</span>
+      </div>
+      <div class="school-name">
+        <strong>مدرسة أم المؤمنين أم سلمة للطفولة المبكرة بغالب</strong>
+      </div>
+    </div>
+
+    <div class="hero">
+      <p class="eyebrow">العام الدراسي 1448هـ</p>
+      <h1 id="homeTitle">مبادرة الأمن السيبراني</h1>
+      <p class="tagline">ألعب وأتعلم.. وأحمي نفسي في العالم الرقمي</p>
+
+      <div class="hero-art">
+        <div class="fahd-holder fahd-big" data-fahd></div>
+        <div class="speech" id="homeSpeech">مرحبًا بك في مغامرة فهد! تعلّم كيف تحمي نفسك في العالم الرقمي</div>
+      </div>
+
+      <div class="menu">
+        <button class="big-btn btn-xo" type="button" data-go="xo">
+          <span class="bb-icon" data-icon="shield"></span>
+          <span class="bb-text"><b>العب X-O السيبراني</b><small>تغلّب على الفيروس بإجاباتك</small></span>
+        </button>
+        <button class="big-btn btn-cards" type="button" data-go="cards">
+          <span class="bb-icon" data-icon="lock"></span>
+          <span class="bb-text"><b>اختبر أمانك الرقمي</b><small>5 مواقف: آمن أم غير آمن؟</small></span>
+        </button>
+        <button class="big-btn btn-help" type="button" id="btnHow">
+          <span class="bb-icon bb-q" aria-hidden="true">؟</span>
+          <span class="bb-text"><b>كيف ألعب؟</b><small>تعليمات سهلة</small></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="emblem">
+      <div class="emblem-logo" data-icon="logo"></div>
+      <p><b>شعار المبادرة:</b> <span class="dot-shield">الدرع</span> يرمز إلى الحماية، و<span class="dot-lock">القفل</span> يرمز إلى أمان المعلومات، والخطوط المضيئة ترمز إلى العالم الرقمي.</p>
+    </div>
+
+    <footer class="credits">
+      <div class="credit"><span>إعداد ومشاركة الطالب</span><b>فهد عبدالعزيز الصالحي</b><em>الصف الثالث الابتدائي</em></div>
+      <div class="credit"><span>إشراف المعلمة</span><b>ميار الصالحي</b></div>
+      <div class="credit"><span>مديرة المدرسة</span><b>شيخه الصحبي</b></div>
+      <button class="link-btn" type="button" data-go="share">مشاركة اللعبة ورمز QR</button>
+    </footer>
+  </section>
+
+  <!-- ===== تحدي X-O ===== -->
+  <section class="screen" id="scr-xo" aria-labelledby="xoTitle">
+    <h2 id="xoTitle" class="screen-title">تحدي X-O السيبراني</h2>
+
+    <div class="xo-intro" id="xoIntro">
+      <div class="vs">
+        <div class="vs-side"><div class="vs-icon" data-icon="shield"></div><b>أنت: الدرع</b></div>
+        <div class="vs-mid">ضد</div>
+        <div class="vs-side"><div class="vs-icon" data-icon="virus"></div><b>الفيروس</b></div>
+      </div>
+      <p class="hint">اختر مربعًا، وأجب عن السؤال لتضع درعك فيه. الفيروس ذكي، فانتبه له! اجمع ثلاثة دروع في خط واحد لتفوز.</p>
+      <button class="cta" type="button" id="btnStartXO">ابدأ التحدي</button>
+    </div>
+
+    <div class="xo-game" id="xoGame" hidden>
+      <div class="scorebar">
+        <div class="pill pill-you"><span data-icon="shield"></span>أنت <b id="xoWins">0</b></div>
+        <div class="pill pill-draw">تعادل <b id="xoDraws">0</b></div>
+        <div class="pill pill-virus"><span data-icon="virus"></span>الفيروس <b id="xoLosses">0</b></div>
+      </div>
+      <div class="turn" id="xoTurn" role="status" aria-live="polite">دورك: اختر مربعًا</div>
+      <div class="board" id="board" role="grid" aria-label="لوحة X-O"></div>
+      <div class="guide">
+        <div class="fahd-holder fahd-mini" data-fahd></div>
+        <p class="guide-text" id="xoGuide">هيا نحمي عالمنا الرقمي!</p>
+      </div>
+      <button class="ghost" type="button" id="btnRestartXO">إعادة البداية</button>
+    </div>
+  </section>
+
+  <!-- ===== اختبر أمانك الرقمي ===== -->
+  <section class="screen" id="scr-cards" aria-labelledby="cardsTitle">
+    <h2 id="cardsTitle" class="screen-title">اختبر أمانك الرقمي</h2>
+    <div class="progress-wrap">
+      <div class="progress" role="progressbar" aria-valuemin="0" id="progress"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-meta"><span id="cardCount">1 / 5</span><span class="points">⭐ <b id="cardPoints">0</b> نقطة</span></div>
+    </div>
+
+    <article class="situation" id="situation" aria-live="polite">
+      <div class="sit-icon" id="sitIcon"></div>
+      <p class="sit-text" id="sitText"></p>
+    </article>
+
+    <div class="answer-row" id="answerRow">
+      <button class="ans ans-safe" type="button" data-safe="1"><span class="ans-mark" aria-hidden="true">✓</span>تصرف آمن</button>
+      <button class="ans ans-unsafe" type="button" data-safe="0"><span class="ans-mark" aria-hidden="true">!</span>تصرف غير آمن</button>
+    </div>
+
+    <div class="feedback" id="cardFeedback" hidden>
+      <div class="fahd-holder fahd-mini" data-fahd></div>
+      <div class="fb-body">
+        <p class="fb-title" id="fbTitle"></p>
+        <p class="fb-why" id="fbWhy"></p>
+        <button class="cta cta-small" type="button" id="btnNextCard">التالي</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== شاشة الاحتفال ===== -->
+  <section class="screen" id="scr-result" aria-labelledby="resTitle">
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+    <div class="result-card">
+      <div class="fahd-holder fahd-celebrate" data-fahd></div>
+      <h2 id="resTitle">أحسنت! أنت بطل الأمن السيبراني!</h2>
+      <p class="res-sub" id="resSub"></p>
+      <div class="res-stars" id="resStars" aria-hidden="true"></div>
+      <div class="stats">
+        <div class="stat"><b id="resCorrect">0</b><span>إجابات صحيحة</span></div>
+        <div class="stat"><b id="resPoints">0</b><span>نقطة</span></div>
+      </div>
+      <p class="tip"><b>نصيحة فهد:</b> <span id="resTip"></span></p>
+
+      <div class="badge-box">
+        <h3>وسامك الرقمي</h3>
+        <label for="heroName">اكتب اسمك الأول ليظهر على الوسام (اختياري)</label>
+        <input id="heroName" type="text" maxlength="14" autocomplete="off" placeholder="مثال: سارة">
+        <canvas id="badgeCanvas" width="800" height="800" aria-label="وسام بطل الأمن السيبراني"></canvas>
+        <div class="row-btns">
+          <button class="ghost" type="button" id="btnSaveBadge">تحميل الوسام (PNG)</button>
+          <button class="ghost" type="button" id="btnPrintBadge">طباعة الوسام</button>
+        </div>
+        <p class="privacy">اسمك يبقى على جهازك فقط، ولا يُرسل إلى أي مكان.</p>
+      </div>
+
+      <div class="row-btns">
+        <button class="cta" type="button" id="btnReplay">إعادة اللعب</button>
+        <button class="ghost" type="button" data-go="home">العودة للرئيسية</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== المشاركة ورمز QR ===== -->
+  <section class="screen" id="scr-share" aria-labelledby="shareTitle">
+    <h2 id="shareTitle" class="screen-title">مشاركة اللعبة</h2>
+    <div class="share-card">
+      <p>بعد نشر اللعبة، الصق رابطها هنا لإنشاء رمز QR يمكن طباعته أو إرساله لأولياء الأمور.</p>
+      <label for="shareUrl">رابط اللعبة</label>
+      <input id="shareUrl" type="url" dir="ltr" placeholder="https://username.github.io/fahd-cyber-game/" autocomplete="off">
+      <p class="err" id="shareErr" hidden></p>
+      <button class="cta" type="button" id="btnMakeQR">إنشاء رمز QR</button>
+      <div class="qr-out" id="qrOut" hidden>
+        <canvas id="qrCanvas" width="640" height="760"></canvas>
+        <div class="row-btns">
+          <button class="ghost" type="button" id="btnSaveQR">تحميل الرمز (PNG)</button>
+          <button class="ghost" type="button" id="btnCopyUrl">نسخ الرابط</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- نافذة السؤال -->
+<div class="modal" id="qModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="qText">
+    <div class="q-head"><span class="q-badge">سؤال الحماية</span><span class="q-num" id="qNum"></span></div>
+    <p class="q-text" id="qText"></p>
+    <div class="q-answers" id="qAnswers">
+      <button class="ans ans-yes" type="button" data-a="1"><span class="ans-mark" aria-hidden="true">✓</span>نعم</button>
+      <button class="ans ans-no" type="button" data-a="0"><span class="ans-mark" aria-hidden="true">✕</span>لا</button>
+    </div>
+    <div class="q-feedback" id="qFeedback" hidden>
+      <p class="fb-title" id="qFbTitle"></p>
+      <p class="fb-why" id="qFbWhy"></p>
+      <div class="row-btns">
+        <button class="cta cta-small" type="button" id="btnQNext">سؤال آخر</button>
+        <button class="ghost" type="button" id="btnQCancel">اختيار مربع آخر</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة كيف ألعب -->
+<div class="modal" id="howModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="howTitle">
+    <h2 id="howTitle">كيف ألعب؟</h2>
+    <div class="how">
+      <div class="how-item"><div class="how-icon" data-icon="shield"></div><div><b>تحدي X-O</b><ol><li>اضغط مربعًا فارغًا، وأجب بـ«نعم» أو «لا».</li><li>إجابة صحيحة = درعك في المربع.</li><li>إجابة خاطئة = تعرف الجواب وتجرّب سؤالًا آخر.</li><li>الفيروس يلعب بعدك، فامنعه من إكمال خط!</li><li>اجمع 3 دروع في خط واحد لتفوز.</li></ol></div></div>
+      <div class="how-item"><div class="how-icon" data-icon="lock"></div><div><b>اختبر أمانك الرقمي</b><ol><li>تظهر لك 5 مواقف جديدة كل مرة.</li><li>اختر: <b class="ok-word">آمن</b> أو <b class="no-word">غير آمن</b>.</li><li>كل إجابة صحيحة = 10 نقاط ⭐</li><li>في النهاية تحصل على وسامك!</li></ol></div></div>
+    </div>
+    <button class="cta" type="button" id="btnHowClose">فهمت، هيا نلعب!</button>
+  </div>
+</div>
+
+<!-- رسالة تشجيع عائمة -->
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="qrcode.js"></script>
+<script src="data.js"></script>
+<script src="icons.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
