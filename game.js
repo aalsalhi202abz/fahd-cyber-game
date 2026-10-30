@@ -33,26 +33,57 @@
 
   /* ---------- الصوت (نغمات مولّدة أصلية) ---------- */
   let soundOn = store.get("fahd-sound") !== "off";
-  let actx = null;
-  function tone(freq, start, dur, type = "sine", vol = 0.18) {
+  let actx = null, unlocked = false;
+  // الجوال (خاصة آيفون) لا يسمح بالصوت إلا بعد أول لمسة، وقد يكتمه زر الصامت:
+  // نفتح الصوت عند أول لمسة، ونطلب وضع التشغيل كي لا يكتمه زر الصامت في آيفون.
+  function getCtx() {
+    if (!actx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* غير مدعوم */ }
+      actx = new AC();
+    }
+    return actx;
+  }
+  function unlockAudio() {
+    const ctx = getCtx();
+    if (!ctx) return;
+    if (ctx.state !== "running") ctx.resume().catch(() => {});
+    if (!unlocked) {
+      try { // صوت صامت قصير جدًا يفتح قناة الصوت في آيفون
+        const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource();
+        src.buffer = b; src.connect(ctx.destination); src.start(0);
+        unlocked = true;
+      } catch (e) { /* تجاهل */ }
+    }
+  }
+  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((ev) =>
+    document.addEventListener(ev, unlockAudio, { capture: true, passive: true }));
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && actx && actx.state !== "running") actx.resume().catch(() => {}); });
+
+  function playTone(ctx, freq, start, dur, type, vol) {
+    const t = ctx.currentTime + 0.02 + start;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  function tone(freq, start, dur, type = "sine", vol = 0.25) {
     if (!soundOn) return;
     try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === "suspended") actx.resume();
-      const t = actx.currentTime + start;
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = type; o.frequency.setValueAtTime(freq, t);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur + 0.05);
+      const ctx = getCtx();
+      if (!ctx) return;
+      if (ctx.state === "running") playTone(ctx, freq, start, dur, type, vol);
+      else ctx.resume().then(() => playTone(ctx, freq, start, dur, type, vol)).catch(() => {});
     } catch (e) { /* لا صوت */ }
   }
   const sfx = {
-    tap: () => tone(660, 0, 0.08, "triangle", 0.12),
+    tap: () => tone(660, 0, 0.08, "triangle", 0.18),
     good: () => { tone(523, 0, 0.12, "triangle"); tone(659, 0.1, 0.12, "triangle"); tone(784, 0.2, 0.22, "triangle"); },
     bad: () => { tone(392, 0, 0.16, "sine", 0.14); tone(330, 0.15, 0.26, "sine", 0.14); },
-    cpu: () => { tone(300, 0, 0.1, "square", 0.05); tone(240, 0.09, 0.12, "square", 0.05); },
+    cpu: () => { tone(300, 0, 0.1, "square", 0.08); tone(240, 0.09, 0.12, "square", 0.08); },
     win: () => [523, 659, 784, 1046, 784, 1046].forEach((f, i) => tone(f, i * 0.12, 0.2, "triangle", 0.16)),
     draw: () => { tone(523, 0, 0.18, "triangle"); tone(523, 0.2, 0.25, "triangle"); }
   };
